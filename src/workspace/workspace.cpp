@@ -1015,7 +1015,21 @@ namespace umbriel {
       return;
     }
 
-    m_layout->arrange(applyLayoutStruts(usable, m_layoutConfig.struts));
+    const wlr_box tiled = applyLayoutStruts(usable, m_layoutConfig.struts);
+    if (ScrollingLayout* scrolling = scrollingLayout()) {
+      wlr_box outputBox{};
+      wlr_output_layout_get_box(m_group->server()->outputLayout(), output->wlr(), &outputBox);
+      if (scrollingVertical()) {
+        scrolling->setFullscreenOverhang(
+            tiled.y - outputBox.y, (outputBox.y + outputBox.height) - (tiled.y + tiled.height)
+        );
+      } else {
+        scrolling->setFullscreenOverhang(
+            tiled.x - outputBox.x, (outputBox.x + outputBox.width) - (tiled.x + tiled.width)
+        );
+      }
+    }
+    m_layout->arrange(tiled);
     // Tab visibility follows the layout on hidden workspaces too, so a workspace always comes back showing the right
     // tabs.
     m_tabs.sync();

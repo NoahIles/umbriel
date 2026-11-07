@@ -541,10 +541,13 @@ int main(int argc, char** argv) {
   // A 200x200 bottom-layer square in the top-left corner, which the overview mirrors into every workspace preview.
   bool bottom = false;
   bool overlay = false;
+  bool dockRight = false;
   for (int index = 3; index < argc; ++index) {
     const std::string option = argv[index];
     if (option == "bottom-layer") {
       bottom = true;
+    } else if (option == "dock-right") {
+      dockRight = true;
     } else if (option == "overlay-layer") {
       overlay = true;
     } else if (option == "keyboard=none") {
@@ -630,6 +633,12 @@ int main(int argc, char** argv) {
     if (overlay) {
       zwlr_layer_surface_v1_set_exclusive_zone(state.layerSurface, -1);
     }
+  } else if (dockRight) {
+    // A full-height panel on the right edge, whose exclusive zone narrows the usable area.
+    zwlr_layer_surface_v1_set_size(state.layerSurface, static_cast<uint32_t>(exclusiveHeight), 0);
+    anchors =
+        ZWLR_LAYER_SURFACE_V1_ANCHOR_TOP | ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM | ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT;
+    zwlr_layer_surface_v1_set_exclusive_zone(state.layerSurface, exclusiveHeight);
   } else {
     zwlr_layer_surface_v1_set_size(state.layerSurface, 0, background ? 0U : static_cast<uint32_t>(exclusiveHeight));
     anchors |= ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT;
