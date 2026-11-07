@@ -211,20 +211,33 @@ namespace umbriel {
       return false;
     }
 
-    // Fullscreen and maximize-to-edges views are presented against the wider
-    // usable area, so they bleed one strut past each end of the strut-inset
-    // strip. The strip reserves that overhang, otherwise the neighboring column
-    // lands underneath the window. Fullscreen is presented against the whole
-    // output, so only its strut share is reserved and it still bleeds over a
-    // layer-shell exclusive zone.
+    bool columnHasFullscreen(const Column& column, const Layout& layout) {
+      for (size_t row = 0; row < column.views.size(); ++row) {
+        const View* view = column.views[row];
+        if (view != nullptr && !column.tabs.hidden(row) && layout.constraintsFor(view).fullscreen) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // Fullscreen and maximize-to-edges views are presented against a wider area than the strut-inset strip, so the
+    // strip reserves their overhang past each end, otherwise the neighboring column lands underneath the window.
+    // Maximize-to-edges fills the usable area, so it overhangs by the struts. Fullscreen fills the whole output, so it
+    // also overhangs any layer-shell exclusive zone on the scroll axis (a side dock); across the axis it still covers
+    // a top bar.
     struct ColumnBleed {
       int before = 0;
       int after = 0;
     };
 
-    ColumnBleed columnBleed(const Column& column, const Layout& layout) {
+    ColumnBleed columnBleed(const Column& column, const ScrollingLayout& layout) {
       if (!columnFillsViewport(column, layout)) {
         return {};
+      }
+      if (columnHasFullscreen(column, layout)) {
+        const auto [before, after] = layout.fullscreenOverhang();
+        return {.before = before, .after = after};
       }
       const LayoutStruts& struts = layout.layoutConfig()->struts;
       const bool vertical = layout.layoutConfig()->scrolling.direction == ScrollingDirection::Vertical;
