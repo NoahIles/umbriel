@@ -60,6 +60,15 @@ namespace umbriel {
     [[nodiscard]] std::array<double, 2> scrollBounds(int viewportPrimary) const;
     void reconcileFocusedColumn(int columnIndex, int viewportPrimary);
     bool centeredRest() const { return m_centeredRest; }
+    // Distance from each end of the strut-inset strip to the output edge along the scroll axis. A fullscreen column
+    // reserves it, since fullscreen is presented against the whole output.
+    void setFullscreenOverhang(int before, int after) {
+      m_fullscreenOverhangBefore = before;
+      m_fullscreenOverhangAfter = after;
+    }
+    [[nodiscard]] std::array<int, 2> fullscreenOverhang() const {
+      return {m_fullscreenOverhangBefore, m_fullscreenOverhangAfter};
+    }
     // How much to subtract from the scroll offset when `columnIndex` is about
     // to lose its last view. Removing a lane closes the primary-axis space it
     // held. Compensation re-anchors content when that space was hidden toward
@@ -182,6 +191,8 @@ namespace umbriel {
     // Column the pending removal took, kept to tell which side the survivor inherits.
     int m_removedFocusedColumn = -1;
     int m_lastViewportPrimary = 0;
+    int m_fullscreenOverhangBefore = 0;
+    int m_fullscreenOverhangAfter = 0;
     const LayoutSnapshot* m_pendingViewportSnapshot = nullptr;
     View* m_pendingViewportAnchor = nullptr;
     double m_pendingViewportCenterFraction = 0.5;
