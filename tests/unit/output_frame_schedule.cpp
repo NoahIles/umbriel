@@ -49,6 +49,12 @@ UMBRIEL_TEST(failedFrameRetriesSoonThenBacksOff) {
   CHECK_EQ(frameRetryDelayMs(1000), 16);
 }
 
+UMBRIEL_TEST(persistentFrameFailuresRequestRecoveryOnce) {
+  CHECK(!umbriel::frameFailuresNeedRendererRecovery(119));
+  CHECK(umbriel::frameFailuresNeedRendererRecovery(120));
+  CHECK(!umbriel::frameFailuresNeedRendererRecovery(121));
+}
+
 UMBRIEL_TEST(idleSuccessfulFrameNeedsNoFollowup) {
   wlr_session session{};
   session.active = true;

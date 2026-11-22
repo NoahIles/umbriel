@@ -1176,14 +1176,17 @@ namespace umbriel {
   void Server::onRendererLost(wl_listener* listener, void* /*data*/) {
     Server* self;
     self = wl_container_of(listener, self, m_rendererLost);
-    if (self->m_stopping || self->m_rendererRecoveryIdle != nullptr) {
+    self->requestRendererRecovery();
+  }
+
+  void Server::requestRendererRecovery() {
+    if (m_stopping || m_rendererRecoveryIdle != nullptr) {
       return;
     }
-    self->m_rendererRecoveryIdle =
-        wl_event_loop_add_idle(wl_display_get_event_loop(self->m_display), onRendererRecoveryIdle, self);
-    if (self->m_rendererRecoveryIdle == nullptr) {
+    m_rendererRecoveryIdle = wl_event_loop_add_idle(wl_display_get_event_loop(m_display), onRendererRecoveryIdle, this);
+    if (m_rendererRecoveryIdle == nullptr) {
       kLog.error("could not defer renderer recovery, terminating");
-      self->stop();
+      stop();
     }
   }
 

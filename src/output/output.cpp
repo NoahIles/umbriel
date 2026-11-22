@@ -2398,6 +2398,10 @@ namespace umbriel {
       break;
     case OutputFrameFollowup::RetryDelayed:
       armFrameRetry();
+      if (frameFailuresNeedRendererRecovery(m_failedFrameCommits)) {
+        kLog.warn("output '{}': {} frame commits failed in a row", m_output->name, m_failedFrameCommits);
+        m_server->requestRendererRecovery();
+      }
       break;
     case OutputFrameFollowup::None:
       break;

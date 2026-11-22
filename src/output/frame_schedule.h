@@ -35,6 +35,10 @@ namespace umbriel {
   // time for the next vblank; failures that persist back off to one 60 Hz frame so a retry never spins.
   inline int frameRetryDelayMs(unsigned consecutiveFailures) { return 1 << std::min(consecutiveFailures, 4U); }
 
+  // About 2 s of failed frames at the 16 ms retry ceiling: past any EBUSY race. Buffers allocated before a suspend can
+  // stay rejected after resume with no GL context loss to report it. Exact match, so one failure streak asks once.
+  inline bool frameFailuresNeedRendererRecovery(unsigned consecutiveFailures) { return consecutiveFailures == 120; }
+
   // Delay before the next effect-only frame. 0 follows the output's refresh (schedule immediately); otherwise the
   // interval for max_fps minus the time already elapsed, at least 1 ms so a late timer never spins.
   inline uint64_t effectFrameDelayMs(int maxFps, uint64_t nowMsec, uint64_t lastEffectFrameMsec) {

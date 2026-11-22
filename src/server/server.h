@@ -282,6 +282,8 @@ namespace umbriel {
     void resumeAnimationClock();
     bool animationClockFrozen() const { return m_frozenAnimationClockMsec.has_value(); }
     void emitRendererLostForTest();
+    // Rebuild the renderer and allocator once the current dispatch unwinds; repeated requests coalesce.
+    void requestRendererRecovery();
     [[nodiscard]] bool injectPlaneCursor(std::string_view spec, std::string* error);
 #endif
     Ipc* ipc() const { return m_ipc.get(); }
