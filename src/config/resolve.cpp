@@ -268,6 +268,9 @@ namespace umbriel {
       if (rule.matchMaximizedToEdges && *rule.matchMaximizedToEdges != state.maximizedToEdges) {
         continue;
       }
+      if (rule.matchWindowedFullscreen && *rule.matchWindowedFullscreen != state.windowedFullscreen) {
+        continue;
+      }
       if (rule.matchPinned && *rule.matchPinned != state.pinned) {
         continue;
       }

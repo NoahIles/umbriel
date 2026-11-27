@@ -20,6 +20,7 @@ default_workspace = 2
 | `match.is_focused`            | Match current focus state.                                                                    |
 | `match.is_floating`           | Match current floating state.                                                                 |
 | `match.is_maximized_to_edges` | Match current maximized-to-edges state.                                                       |
+| `match.is_windowed_fullscreen` | Match while `window-toggle-windowed-fullscreen` has the window believing it is fullscreen.   |
 | `match.is_pinned`             | Match current pinned state.                                                                   |
 | `match.is_scratchpad`         | Match current scratchpad state.                                                               |
 | `match.is_alone`              | Match whether this is alone in its workspace's tiled layout.                                  |

@@ -1238,6 +1238,22 @@ UMBRIEL_TEST(windowRulesMatchIsDialog) {
   CHECK(!toplevel.attachToParent);
 }
 
+UMBRIEL_TEST(windowRulesMatchIsWindowedFullscreen) {
+  Config config;
+  WindowRule rule;
+  rule.matchWindowedFullscreen = true;
+  rule.cornerRadius = 0;
+  config.windowRules.push_back(std::move(rule));
+
+  const auto windowed = umbriel::resolveWindowRules(
+      config, "game", std::nullopt, std::nullopt, ContentType::None, {.windowedFullscreen = true}, 0
+  );
+  CHECK(windowed.cornerRadius && *windowed.cornerRadius == 0);
+
+  const auto normal = umbriel::resolveWindowRules(config, "game", std::nullopt, std::nullopt, ContentType::None, {}, 0);
+  CHECK(!normal.cornerRadius);
+}
+
 UMBRIEL_TEST(windowRulesMatchIsCastTarget) {
   Config config;
 

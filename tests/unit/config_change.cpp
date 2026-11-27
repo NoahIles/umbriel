@@ -918,6 +918,10 @@ UMBRIEL_TEST(tearingPolicyDoesNotReapplyOutputStateOrInvalidateOverview) {
   changedCastTargetMatcher.windowRules[0].matchCastTarget = true;
   CHECK(ConfigEffects::between(forcedByRule, changedCastTargetMatcher).tearingPolicy);
 
+  Config changedWindowedFullscreenMatcher = forcedByRule;
+  changedWindowedFullscreenMatcher.windowRules[0].matchWindowedFullscreen = true;
+  CHECK(ConfigEffects::between(forcedByRule, changedWindowedFullscreenMatcher).tearingPolicy);
+
   Config changedTagMatcher = forcedByRule;
   changedTagMatcher.windowRules[0].xdgTagPatterns = RegexPatterns{}.add("^game-launcher$");
   CHECK(ConfigEffects::between(forcedByRule, changedTagMatcher).tearingPolicy);

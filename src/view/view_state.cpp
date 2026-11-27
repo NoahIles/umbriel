@@ -563,6 +563,7 @@ namespace umbriel {
     m_windowedFullscreen = windowed;
     m_windowedFullscreenExitPending = !windowed && m_toplevel != nullptr;
     sendClientFullscreen(windowed);
+    refreshStateRuleEffects();
   }
 
   void View::applyDeferredUnfullscreen() {
